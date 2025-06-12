@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <z-button></z-button>1
+  <z-button></z-button>
 </template>
 
 <style scoped>
