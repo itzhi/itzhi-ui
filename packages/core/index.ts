@@ -7,5 +7,5 @@ import '@itzhi-ui/theme/index.css'
 library.add(fas)
 const installer = makeInstall(components)
 
-export * from '@itzhi-ui/components'
+export * from '../components'
 export default installer
