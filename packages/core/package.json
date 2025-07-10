@@ -1,12 +1,14 @@
 {
   "name": "itzhi-ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "组件库使用的是Vue3 + TS",
   "type": "module",
   "main": "./dist/umd/index.umd.cjs",
   "module": "./dist/es/index.js",
   "types": "./dist/types/core/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": {
       "import": "./dist/es/index.js",
@@ -18,7 +20,9 @@
       "require": "./dist/"
     }
   },
-  "sideEffects": ["./dist/index.css"],
+  "sideEffects": [
+    "./dist/index.css"
+  ],
   "scripts": {
     "build": "run-s clean build-only move-style",
     "build-only": "run-p build-es build-umd",
