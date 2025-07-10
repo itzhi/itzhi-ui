@@ -1,0 +1,16 @@
+.z-icon {
+    --z-icon-color: inherit;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    fill: currentColor;
+    color: var(--z-icon-color);
+    font-size: inherit;
+}
+
+@each $val in primary, info, success, warning, danger {
+    .z-icon--$(val) {
+    --z-icon-color: var(--z-color-$(val));
+}
+}
