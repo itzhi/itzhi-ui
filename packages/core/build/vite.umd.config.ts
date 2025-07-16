@@ -1,7 +1,8 @@
 import {defineConfig} from 'vite'
-import {readFileSync} from 'fs'
+import {readFileSync, readFile} from 'fs'
 import {resolve} from 'path'
-import {delay} from 'lodash-es'
+import {defer, delay} from 'lodash-es'
+import {visualizer} from 'rollup-plugin-visualizer'
 import {compression} from 'vite-plugin-compression2'
 
 import shell from 'shelljs'
@@ -14,12 +15,10 @@ const isDev = process.env.NODE_ENV === 'development'
 const isTest = process.env.NODE_ENV === 'test'
 
 function moveStyles() {
-	try {
-		readFileSync('./dist/umd/index.css.gz')
-		shell.cp('./dist/umd/index.css', './dist/index.css')
-	} catch (_) {
-		delay(moveStyles, 800)
-	}
+	readFile('./dist/umd/index.css.gz', (err) => {
+		if (err) return delay(moveStyles, 800)
+		defer(() => shell.cp('./dist/umd/index.css', './dist/index.css'))
+	})
 }
 
 export default defineConfig({
@@ -27,6 +26,9 @@ export default defineConfig({
 		vue(),
 		compression({
 			include: /.(cjs|css)$/i
+		}),
+		visualizer({
+			filename: 'dist/stats.umd.html'
 		}),
 		terser({
 			compress: {
@@ -48,7 +50,7 @@ export default defineConfig({
 	build: {
 		outDir: 'dist/umd',
 		lib: {
-			entry: resolve(__dirname, './index.ts'),
+			entry: resolve(__dirname, '../index.ts'),
 			name: 'itzhi-ui',
 			fileName: 'index',
 			formats: ['umd'],

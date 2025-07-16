@@ -1,7 +1,8 @@
 import {defineConfig} from 'vite'
+import {readdirSync, readdir} from 'fs'
 import {resolve} from 'path'
-import {readdirSync} from 'fs'
-import {delay, filter, map} from 'lodash-es'
+import {defer, delay, filter, map} from 'lodash-es'
+import {visualizer} from 'rollup-plugin-visualizer'
 import shell from 'shelljs'
 import vue from '@vitejs/plugin-vue'
 import dts from 'vite-plugin-dts'
@@ -18,24 +19,21 @@ function getDirectoriesSync(basePath: string) {
 }
 
 function moveStyles() {
-	try {
-		readdirSync('./dist/es/theme')
-		shell.mv('./dist/es/theme', './dist')
-	} catch (_) {
-		delay(moveStyles, 800)
-	}
+	readdir('./dist/es/theme', (err) => {
+		if (err) return delay(moveStyles, 800)
+		defer(() => shell.mv('./dist/es/theme', './dist'))
+	})
 }
 
 export default defineConfig({
 	plugins: [
 		vue(),
+		visualizer({
+			filename: 'dist/stats.es.html'
+		}),
 		dts({
 			tsconfigPath: '../../tsconfig.build.json',
 			outDir: 'dist/types'
-		}),
-		hooks({
-			rmFiles: ['./dist/es', './dist/theme', './dist/types'],
-			afterBuild: moveStyles,
 		}),
 		terser({
 			compress: {
@@ -63,6 +61,10 @@ export default defineConfig({
 				keep_classnames: isDev,
 				keep_fnames: isDev
 			}
+		}),
+		hooks({
+			rmFiles: ['./dist/es', './dist/theme', './dist/types'],
+			afterBuild: moveStyles,
 		})
 	],
 	build: {
@@ -70,7 +72,7 @@ export default defineConfig({
 		minify: false,
 		cssCodeSplit: true,
 		lib: {
-			entry: resolve(__dirname, './index.ts'),
+			entry: resolve(__dirname, '../index.ts'),
 			name: 'itzhi-ui',
 			fileName: 'index',
 			formats: ['es'],
