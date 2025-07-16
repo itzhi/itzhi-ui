@@ -1,4 +1,5 @@
 /** @type { import('@storybook/vue3-vite').Preview } */
+import 'itzhi-ui/dist/index.css'
 const preview = {
   parameters: {
     controls: {
