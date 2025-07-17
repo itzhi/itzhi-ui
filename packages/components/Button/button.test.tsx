@@ -1,6 +1,7 @@
 import {describe, it, test, expect, vi} from 'vitest'
 import {mount} from "@vue/test-utils"
-
+import {withInstall} from '@itzhi-ui/utils'
+import {ZButton} from "./index.ts";
 import Button from "./Button.vue"
 import ButtonGroup from "./ButtonGroup.vue";
 import Icon from '../Icon/Icon.vue';
@@ -194,5 +195,24 @@ describe("ButtonGroup.vue", () => {
 		))
 		const buttonWrapper = wrapper.findComponent(Button)
 		expect(buttonWrapper.classes()).toContain(`is-disabled`)
+	})
+})
+
+describe("Button/index", () => {
+	it('should be exported with withInstall', () => {
+		expect(ZButton.install).toBeDefined()
+	})
+	it('component should be exported', () => {
+		expect(ZButton).toBe(Button)
+	})
+
+	it('should enhance Button component', () => {
+		const enhanceButton = withInstall(Button)
+		expect(enhanceButton).toBe(ZButton)
+	})
+
+	it('should apply specific enhance', () => {
+		const enhanceButton = withInstall(Button)
+		expect(enhanceButton).toHaveProperty('install')
 	})
 })
